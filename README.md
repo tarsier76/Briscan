@@ -1,2 +1,2 @@
 # Briscan
-Endpoint vulnerability scanner for Debian based systems.
+Bash endpoint vulnerability scanner for Debian based systems.
