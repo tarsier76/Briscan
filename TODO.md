@@ -1,3 +1,11 @@
+# Presentation and user experience:
+
+- Present what is being scanned
+- Print colored text for each scan result message
+- Offer remediation steps or suggestions 
+
+# The script looks for the following:
+
 1. **Network**
 - Check for suspicious network connections
 - Detects unnecessary services
