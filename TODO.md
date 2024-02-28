@@ -1,7 +1,6 @@
 1. **Network**
-- Check interfaces for potential vulnerabilities
 - Check for suspicious network connections
-- Disables unnecessary network services
+- Detects unnecessary services
 - Review SSH configuration
 - Close unnecessary ports 
 
@@ -26,14 +25,14 @@
 
 7. **Files and Directories**
 - File integrity check for critical system files and directories 
-- Check permissions 
+- Check suid and guid permissions
 - Limit access and permissions on temporary directories
 - Check for suspicious hidden files 
 - Review user home directories permissions
 
 8. **Kernel and Booting**
 - Verify if secure boot is enabled to prevent unauthorized boot loaders
-- Ensure unnecessary modules are disabled
+- Check if unnecessary modules are disabled
 
 9. **System**
 - Check if updates are available
