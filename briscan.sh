@@ -15,7 +15,8 @@ result_warning="[ ${yellow_color}WARNING${no_color} ]"
 result_alert="[ ${red_color}ALERT${no_color} ]"
 
 check_suspicious_network_connections() {
-	suspected_port=$(netstat -tulnap 2>/dev/null | awk '{print $4, $5, $7}')
+	outbound_connections_ports=$(netstat -tulnap 2>/dev/null | awk -F: '{print $3}' | cut -d " " -f 1 | awk NF)
+	inbound_connections_ports=$(netstat -tulnap 2>/dev/null | awk -F: '{print $2}' | cut -d " " -f 1 | awk NF)
 }
 
 check_suspicious_network_connections
