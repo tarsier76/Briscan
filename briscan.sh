@@ -25,8 +25,8 @@ looking_for_message=$(printf "Looking for")
 check_network_connections() {
 	printf "${looking_for_message} suspicious network connections...\n"
 
-	outbound_connections_ports=$(netstat -tulnap 2>/dev/null | awk -F: '{print $3}' | cut -d " " -f 1 | awk NF)
-	outbound_connections_pid=$(netstat -tulnap 2>/dev/null | awk '{print $7,$8}' | grep -E '[0-9]+')
+	outbound_connections_ports=$(ss -tulnap 2>/dev/null | awk -F: '{print $3}' | cut -d " " -f 1 | awk NF)
+	outbound_connections_pid=$(ss -tulnap 2>/dev/null | awk '{print $7,$8}' | grep -E '[0-9]+')
 	outbound_connections_array=($outbound_connections_ports)
 
 	known_services_ports=$(cat /etc/services | awk '{print $2}' | grep -oE '[0-9]+')
@@ -50,6 +50,10 @@ check_network_connections() {
 			printf "No suspicious network connection found for outbound port ${outbound_port} ${result_good}\n"
 		fi
 	done
+}
+
+check_unnecessary_services() {
+	started_services=$()
 }
 
 check_network_connections
