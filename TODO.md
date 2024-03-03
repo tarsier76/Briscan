@@ -8,7 +8,6 @@
 
 1. **Network**
 - Check for suspicious network connections
-- Detects unnecessary services
 - Review SSH configuration
 - Close unnecessary ports 
 
@@ -24,7 +23,6 @@
 - Enforces a default deny policy
 
 5. **Logging**
-- Log for intrusion detection
 - Review system logs for any unusual activities or errors
 
 6. **Malware**
