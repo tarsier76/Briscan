@@ -14,16 +14,16 @@ result_good="[ ${green_color}GOOD${end_style} ]"
 result_suggestion="[ ${gray_color}SUGGESTION${end_style} ]"
 result_warning="[ ${yellow_color}WARNING${end_style} ]"
 result_alert="[ ${red_color}ALERT${end_style} ]"
+result_info="[ ${dark_magenta_color}INFO${end_style} ]"
 
 # Scanning info messages
 
 printf "${bold_text}Scanning your system...${end_style}\n"
-looking_for_message=$(printf "Looking for")
 
 # Functions
 
 check_network_connections() {
-	printf "${looking_for_message} suspicious network connections...\n"
+	printf "\nLooking for suspicious network connections...\n"
 
 	outbound_connections_ports=$(ss -tulnap 2>/dev/null | awk -F: '{print $3}' | cut -d " " -f 1 | awk NF)
 	outbound_connections_pid=$(ss -tulnap 2>/dev/null | awk '{print $7,$8}' | grep -E '[0-9]+')
@@ -52,8 +52,20 @@ check_network_connections() {
 	done
 }
 
-check_unnecessary_services() {
-	started_services=$()
+check_activated_services() {
+	printf "\nLooking for open ports and services...\n"
+	listening_ports=($(ss -tuln | grep LISTEN | awk '{print $5}' | cut -d ':' -f 2 | awk NF))
+	if [[ -n "${listening_ports[0]}" ]]; then
+		for port in "${listening_ports[@]}"; do
+			port_command=$(sudo lsof -i :${port} | sed -n '2p' | awk '{print $1}')
+			port_name=$(sudo lsof -i :{$port} | sed -n '2p' | awk '{print $9}' | awk -F ':' 'print $2')
+			printf "Port $port is open (Command: $port_command, Name: $port_name) $result_info\n"
+		done
+		printf "If the service is not needed, disabling it will also close the port.\nUse 'systemctl stop <service>' and 'systemctl disable <service>' to stop and disable service at start-up. $result_suggestion\n"
+	else
+		printf "No ports are opened for inbound connections! $result_good\n"
+	fi
 }
 
 check_network_connections
+check_activated_services
