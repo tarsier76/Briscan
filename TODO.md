@@ -1,15 +1,15 @@
 # Presentation and user experience:
 
-- Present what is being scanned
-- Print colored text for each scan result message
-- Offer remediation steps or suggestions 
+- Present what is being scanned **DONE**
+- Print colored text for each scan result message **DONE**
+- Offer remediation steps or suggestions **DONE**
 
 # The script looks for the following:
 
 1. **Network**
-- Check for suspicious network connections
+- Check for suspicious network connections **DONE**
 - Review SSH configuration
-- Close unnecessary ports 
+- Check for open ports **DONE**
 
 2. **Processes and Memory**
 - Detects processes that run with elevated privilleges
