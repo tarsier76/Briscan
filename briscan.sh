@@ -23,7 +23,7 @@ printf "${bold_text}Scanning your system...${end_style}\n"
 # Functions
 
 check_network_connections() {
-	printf "\nLooking for suspicious network connections...\n"
+	printf "\n${bold_text}Looking for suspicious network connections...${end_style}\n"
 
 	outbound_connections_ports=$(ss -tulnap 2>/dev/null | awk -F: '{print $3}' | cut -d " " -f 1 | awk NF)
 	outbound_connections_pid=$(ss -tulnap 2>/dev/null | awk '{print $7,$8}' | grep -E '[0-9]+')
@@ -53,12 +53,12 @@ check_network_connections() {
 }
 
 check_activated_services() {
-	printf "\nLooking for open ports and services...\n"
+	printf "\n${bold_text}Looking for open ports and services...${end_style}\n"
 	listening_ports=($(ss -tuln | grep LISTEN | awk '{print $5}' | cut -d ':' -f 2 | awk NF))
 	if [[ -n "${listening_ports[0]}" ]]; then
 		for port in "${listening_ports[@]}"; do
-			port_command=$(sudo lsof -i :${port} | sed -n '2p' | awk '{print $1}')
-			port_name=$(sudo lsof -i :${port} | sed -n '2p' | awk '{print $9}' | awk -F ':' '{print $2}')
+			port_command=$(sudo lsof -i :${port} 2>/dev/null | sed -n '2p' | awk '{print $1}')
+			port_name=$(sudo lsof -i :${port} 2>/dev/null | sed -n '2p' | awk '{print $9}' | awk -F ':' '{print $2}')
 			printf "Port $port is open (Command: $port_command, Name: $port_name) $result_info\n"
 		done
 		printf "\nIf the service is not needed, disabling it will also close the port.\nUse 'systemctl stop <service>' and 'systemctl disable <service>' to stop and disable service at start-up. $result_suggestion\n"
@@ -67,5 +67,28 @@ check_activated_services() {
 	fi
 }
 
+review_ssh_configuration() {
+	printf "\n${bold_text}Reviewing your ssh configuration...${end_style}\n"
+	ssh_config_file="/etc/ssh/sshd_config"
+	grab_line() {
+		local line="$1"
+		if grep -q "$line" "$ssh_config_file"; then
+			printf "yoo\n"
+			exit 0
+		else
+			printf "Line "$line" is not in '$ssh_config_file' "${result_info}"\n"
+			exit 1
+		fi
+	}
+
+	root_login=$(grab_line "PermitRootLogin prohibit-password$")
+	if [[ $root_login -eq 0 ]]; then
+		if grep -q "^#" $ssh_config_file; then
+			printf "\nPermitRootLogin is enabled. This is not a concern, but disabling it improves security, in case another user has sudo rights. Uncomment 'PermitRootLogin' in the $ssh_config_file $result_suggestion\n"
+		fi
+	fi
+}
+
 check_network_connections
 check_activated_services
+review_ssh_configuration
