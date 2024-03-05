@@ -4,14 +4,14 @@
 
 red_color="\e[31m"
 yellow_color="\e[93m"
-gray_color="\e[30m"
+light_blue_color="\e[34m"
 green_color="\e[32m"
 dark_magenta_color="\e[35m"
 end_style="\e[0m"
 bold_text="\e[1m"
 
 result_good="[ ${green_color}GOOD${end_style} ]"
-result_suggestion="[ ${gray_color}SUGGESTION${end_style} ]"
+result_suggestion="[ ${light_blue_color}SUGGESTION${end_style} ]"
 result_warning="[ ${yellow_color}WARNING${end_style} ]"
 result_alert="[ ${red_color}ALERT${end_style} ]"
 result_info="[ ${dark_magenta_color}INFO${end_style} ]"
@@ -58,10 +58,10 @@ check_activated_services() {
 	if [[ -n "${listening_ports[0]}" ]]; then
 		for port in "${listening_ports[@]}"; do
 			port_command=$(sudo lsof -i :${port} | sed -n '2p' | awk '{print $1}')
-			port_name=$(sudo lsof -i :{$port} | sed -n '2p' | awk '{print $9}' | awk -F ':' 'print $2')
+			port_name=$(sudo lsof -i :${port} | sed -n '2p' | awk '{print $9}' | awk -F ':' '{print $2}')
 			printf "Port $port is open (Command: $port_command, Name: $port_name) $result_info\n"
 		done
-		printf "If the service is not needed, disabling it will also close the port.\nUse 'systemctl stop <service>' and 'systemctl disable <service>' to stop and disable service at start-up. $result_suggestion\n"
+		printf "\nIf the service is not needed, disabling it will also close the port.\nUse 'systemctl stop <service>' and 'systemctl disable <service>' to stop and disable service at start-up. $result_suggestion\n"
 	else
 		printf "No ports are opened for inbound connections! $result_good\n"
 	fi
