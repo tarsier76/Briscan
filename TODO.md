@@ -8,7 +8,7 @@
 
 1. **Network**
 - Check for suspicious network connections **DONE**
-- Review SSH configuration
+- Review SSH configuration **DONE** 
 - Check for open ports **DONE**
 
 2. **Processes and Memory**
