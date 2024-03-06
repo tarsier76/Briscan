@@ -72,19 +72,47 @@ review_ssh_configuration() {
 	ssh_config_file="/etc/ssh/sshd_config"
 	grab_line() {
 		local line="$1"
-		if grep -q "$line" "$ssh_config_file"; then
-			printf "yoo\n"
+		if grep -m 1 -q "$line" "$ssh_config_file"; then
 			exit 0
 		else
-			printf "Line "$line" is not in '$ssh_config_file' "${result_info}"\n"
+			printf "Line "$line" is not in '$ssh_config_file' "${result_info}"${result_info}\n"
 			exit 1
 		fi
 	}
 
 	root_login=$(grab_line "PermitRootLogin prohibit-password$")
 	if [[ $root_login -eq 0 ]]; then
-		if grep -q "^#" $ssh_config_file; then
+		if grep -q "^#PermitRootLogin" $ssh_config_file; then
 			printf "\nPermitRootLogin is enabled. This is not a concern, but disabling it improves security, in case another user has sudo rights. Uncomment 'PermitRootLogin' in the $ssh_config_file $result_suggestion\n"
+		else
+			printf "\nPermitRootLogin is disabled. $result_good"
+		fi
+	fi
+
+	empty_passwords=$(grab_line "PermitEmptyPasswords")
+	if [[ $empty_passwords -eq 0 ]]; then
+		if grep -q "^#PermitEmptyPasswords" $ssh_config_file; then
+			printf "\nPermitEmptyPasswords is commented. Uncomment the line and set it to 'no' in $ssh_config_file in order to disable empty passwords ${result_suggestion}\n"
+		else
+			printf "\nPermitEmptyPasswords rule is set to no ${result_good}\n"
+		fi
+	fi
+
+	x11_forwarding=$(grab_line "X11Forwarding")
+	if [[ $x11_forwarding -eq 0 ]]; then
+		if grep -q -m 1 "X11Forwarding yes" $ssh_config_file; then
+			printf "\nX11Forwarding should be set to 'no' in $ssh_config_file in order to reduce attack surface $result_suggestion\n"
+		else
+			printf "\nX11Forwarding is set to no $result_good\n"
+		fi
+	fi
+
+	max_login_tries=$(grab_line "MaxAuthTries")
+	if [[ $max_login_tries -eq 0 ]]; then
+		if grep -q "^#MaxAuthTries" $ssh_config_file; then
+			printf "\nMaxAuthTries is commented. Uncomment it in $ssh_config_file to enforce maximum number of login tries before timeout $result_suggestion\n"
+		else
+			printf "\nMaxAuthTries is enabled $result_good\n"
 		fi
 	fi
 }
