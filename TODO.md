@@ -12,7 +12,7 @@
 - Check for open ports **DONE**
 
 2. **Processes and Memory**
-- Detects processes that run with elevated privilleges
+- Detects processes that run with elevated privilleges **DONE**
 
 3. **Users, Groups, Authentication and Passwords**
 - Looks for potential avenues for privilege escalation by user accounts
