@@ -68,7 +68,7 @@ check_activated_services() {
 }
 
 review_ssh_configuration() {
-	printf "\n${bold_text}Reviewing your ssh configuration...${end_style}\n"
+	printf "\n${bold_text}Reviewing your ssh configuration...${end_style}"
 	ssh_config_file="/etc/ssh/sshd_config"
 	grab_line() {
 		local line="$1"
@@ -118,7 +118,7 @@ review_ssh_configuration() {
 }
 
 check_elevated_processes() {
-	printf "\n${bold_text}Looking for suspicious processes that run with elevated privileges...${end_style}\n"
+	printf "\n${bold_text}Looking for suspicious processes that run with elevated privileges...${end_style}"
 	ps_output=$(ps -U root -u root u)
 	cpu_threshold=4
 	mem_threshold=4
@@ -138,7 +138,39 @@ check_elevated_processes() {
 	fi
 }
 
+check_suid_files() {
+	printf "\n${bold_text}Looking for dangerous files/binaries that can be executed as root...${end_style}\n"
+	binaries_found=$(sudo find / -type f \( -perm -4000 \) -exec ls -l {} \; 2>/dev/null)
+	safe_directories_list=("/usr" "/bin" "/sbin" "/lib")
+	matched=0
+
+	while read -r line; do
+		suspicious_directory=$(printf "%s" "$line" | awk '{print $NF}')
+		suspicious_file=$(basename "$suspicious_directory")
+		suspicious_extension="${suspicious_file##*.}"
+
+		for safe_directory in "${safe_directories_list[@]}"; do
+			if [[ $suspicious_directory == $safe_directory* ]]; then
+				continue 2
+			fi
+		done
+
+		if [ "$suspicious_extension" != "$suspicious_file" ]; then
+			printf "\nWarning, this binary can be executed as root by anybody: $suspicious_directory $result_alert\nIf it's looks familiar leave it. If you don't recognise this file, change its permissions or remove it $result_alert\n"
+			matched=$((matched + 1))
+		else
+			printf "\nThe following binary can be executed by anyone: $suspicious_directory. $result_warning\nIf the binary seems to be safe or the functionality is intended, keep it as it is, otherwise delete it or change its permissions.\n"
+			matched=$((matched + 1))
+		fi
+	done <<<"$binaries_found"
+
+	if [[ $matched -eq 0 ]]; then
+		printf "\nNo suspicious binaries that can be executed by root $result_good\n"
+	fi
+}
+
 check_network_connections
 check_activated_services
 review_ssh_configuration
 check_elevated_processes
+check_suid_files
