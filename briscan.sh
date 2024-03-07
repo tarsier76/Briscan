@@ -117,6 +117,28 @@ review_ssh_configuration() {
 	fi
 }
 
+check_elevated_processes() {
+	printf "\n${bold_text}Looking for suspicious processes that run with elevated privileges...${end_style}\n"
+	ps_output=$(ps -U root -u root u)
+	cpu_threshold=4
+	mem_threshold=4
+	suspicious_processes_found=0
+	while read -r line; do
+		local pid=$(echo "$line" | awk '{$2}')
+		local user_name=$(echo "$line" | awk '{$1}')
+		local cpu_usage=$(echo "$line" | awk '{$3}')
+		local mem_usage=$(echo "$line" | awk '{$4}')
+		local process_name=$(echo "$line" | awk '{$11}')
+		if [[ "${cpu_usage%.*}" -gt "$cpu_threshold" ]] || [[ "${mem_usage%.*}" -gt "$mem_threshold" ]]; then
+			printf "\nSuspicious process running with root privileges: Process: "$process_name" | PID - "$pid" | User - "$user_name" "$result_warning"\nIf it looks familiar, ignore this warning, but further investigation can be done.\n"
+		fi
+	done <<<"$ps_output"
+	if [[ $suspicious_processes_found -eq 0 ]]; then
+		printf "\nNo suspicious processes running with elevated privileges. $result_good\n"
+	fi
+}
+
 check_network_connections
 check_activated_services
 review_ssh_configuration
+check_elevated_processes
