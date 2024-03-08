@@ -150,7 +150,7 @@ check_suid_files() {
 		suspicious_extension="${suspicious_file##*.}"
 
 		for safe_directory in "${safe_directories_list[@]}"; do
-			if [[ $suspicious_directory == $safe_directory* ]]; then
+			if [[ $suspicious_directory == "$safe_directory"* ]]; then
 				continue 2
 			fi
 		done
@@ -169,8 +169,23 @@ check_suid_files() {
 	fi
 }
 
+verify_user_accounts() {
+	printf "${bold_text}\nLooking for all created user accounts...${end_style}"
+	user_list=$(sudo cat /etc/passwd)
+
+	while read -r line; do
+		user_acc_ids=$(echo $line | awk -F: '{print $3}')
+		user_acc_name=$(echo $line | awk -F: '{print $1}')
+		if [[ "$user_acc_ids" -ge 1000 ]]; then
+			printf "\nUser account found: $user_acc_name $result_info"
+		fi
+	done <<<"$user_list"
+	printf "\n\nReview each of these user accounts, delete any not used or suspicious ones. $result_suggestion"
+}
+
 check_network_connections
 check_activated_services
 review_ssh_configuration
 check_elevated_processes
 check_suid_files
+verify_user_accounts
