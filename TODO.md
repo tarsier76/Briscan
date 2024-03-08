@@ -15,9 +15,8 @@
 - Detects processes that run with elevated privilleges **DONE**
 
 3. **Users, Groups, Authentication and Passwords**
-- Looks for potential avenues for privilege escalation by user accounts
-- Verify there are no suspicious accounts
-- Check the 'sudoers' file for unnecessary user permissions
+- Looks for potential avenues for privilege escalation by user accounts **DONE** 
+- Verify there are no suspicious accounts **DONE**
 
 4. **Firewall**
 - Enforces a default deny policy
@@ -31,7 +30,6 @@
 
 7. **Files and Directories**
 - File integrity check for critical system files and directories 
-- Check suid and guid permissions
 - Limit access and permissions on temporary directories
 - Check for suspicious hidden files 
 - Review user home directories permissions
