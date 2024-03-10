@@ -2,6 +2,11 @@
 
 # Colors, styling and scan result messages
 
+if [ $(id -u) -ne 0 ]; then
+	printf "\nThe script must be run with root/sudo privileges.\n"
+	exit 1
+fi
+
 red_color="\e[31m"
 yellow_color="\e[93m"
 light_blue_color="\e[34m"
@@ -141,7 +146,7 @@ check_elevated_processes() {
 check_suid_files() {
 	printf "\n${bold_text}Looking for dangerous files/binaries that can be executed as root...${end_style}\n"
 	binaries_found=$(sudo find / -type f \( -perm -4000 \) -exec ls -l {} \; 2>/dev/null)
-	safe_directories_list=("/usr" "/bin" "/sbin" "/lib")
+	safe_directories_list=("/usr")
 	matched=0
 
 	while read -r line; do
@@ -180,7 +185,20 @@ verify_user_accounts() {
 			printf "\nUser account found: $user_acc_name $result_info"
 		fi
 	done <<<"$user_list"
-	printf "\n\nReview each of these user accounts, delete any not used or suspicious ones. $result_suggestion"
+	printf "\n\nReview each of these user accounts, delete any not used or suspicious ones. $result_suggestion\n"
+}
+
+check_firewall_policies() {
+	printf "${bold_text}\nReviewing your firewall policies...${end_style}\n"
+	firewall_policies=$(sudo iptables -L -n | grep -E "Chain (INPUT|FORWARD) \(policy")
+
+	while read -r line; do
+		if echo $line | grep -q "DROP"; then
+			printf "Firewall rule for "$(printf "%s" "$line" | awk '{print $2}')" traffic is set to default deny $result_good\n"
+		else
+			printf "Firewall rule for "$(printf "%s" "$line" | awk '{print $2}')" is enabled $result_warning\nThis should be set to DENY and manually create each rule when needed\n"
+		fi
+	done <<<$firewall_policies
 }
 
 check_network_connections
@@ -189,3 +207,4 @@ review_ssh_configuration
 check_elevated_processes
 check_suid_files
 verify_user_accounts
+check_firewall_policies
