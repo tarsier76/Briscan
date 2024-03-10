@@ -19,7 +19,7 @@
 - Verify there are no suspicious accounts **DONE**
 
 4. **Firewall**
-- Enforces a default deny policy
+- Scans policies and recommends a default deny policy **DONE**
 
 5. **Logging**
 - Review system logs for any unusual activities or errors
