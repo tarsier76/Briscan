@@ -213,6 +213,19 @@ review_log_files() {
 	done
 }
 
+temporary_directories_permissions() {
+	printf "${bold_text}\n\nChecking temporary directories permissions...${end_style}"
+	temporary_directories=('/var/tmp' '/tmp')
+	for directory in "${temporary_directories[@]}"; do
+		permissions_temp_directories=$(ls -ld $directory | awk '{print $1}' | grep 't')
+		if [ $permissions_temp_directories ]; then
+			printf "\nSticky bit set for temporary directory $directory $result_good"
+		else
+			printf "\nSticky bit is not set for temporary directory $directory $result_warning\nAny user can change or delete it's contents"
+		fi
+	done
+}
+
 check_network_connections
 check_activated_services
 review_ssh_configuration
@@ -221,3 +234,4 @@ check_suid_files
 verify_user_accounts
 check_firewall_policies
 review_log_files
+temporary_directories_permissions

@@ -24,20 +24,14 @@
 5. **Logging**
 - Review system logs for any unusual activities or errors **DONE**
 
-6. **Malware**
-- Review the configuration files for unauthorized modifications or anomalies
-- Scans system binaries, libraries and kernel objects for signs of rootkits 
-
-7. **Files and Directories**
-- File integrity check for critical system files and directories 
+6. **Files and Directories** 
 - Limit access and permissions on temporary directories
-- Check for suspicious hidden files 
 - Review user home directories permissions
 
-8. **Kernel and Booting**
+7. **Kernel and Booting**
 - Verify if secure boot is enabled to prevent unauthorized boot loaders
 - Check if unnecessary modules are disabled
 
-9. **System**
+8. **System**
 - Check if updates are available
 - Review the scheduled cron jobs for any unfamiliar or suspicious entries
