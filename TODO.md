@@ -22,7 +22,7 @@
 - Scans policies and recommends a default deny policy **DONE**
 
 5. **Logging**
-- Review system logs for any unusual activities or errors
+- Review system logs for any unusual activities or errors **DONE**
 
 6. **Malware**
 - Review the configuration files for unauthorized modifications or anomalies
