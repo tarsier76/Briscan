@@ -198,7 +198,19 @@ check_firewall_policies() {
 		else
 			printf "Firewall rule for "$(printf "%s" "$line" | awk '{print $2}')" is enabled $result_warning\nThis should be set to DENY and manually create each rule when needed\n"
 		fi
-	done <<<$firewall_policies
+	done <<<"$firewall_policies"
+}
+
+review_log_files() {
+	printf "${bold_text}\nReviewing last update date for log files...${end_style}"
+	files_to_review=('/var/log/faillog' '/var/log/auth.log' '/var/log/boot.log' '/var/log/apache2/error.log' '/var/log/secure' '/var/log/apt/history.log' '/var/log/apache2/error.log' '/var/log/messages')
+	for file in "${files_to_review[@]}"; do
+		if [ ! -e $file ]; then
+			continue
+		fi
+		last_changed=$(ls -l $file | awk '{print $6,$7}')
+		printf "\nLog file $file contents last updated $last_changed $result_info"
+	done
 }
 
 check_network_connections
@@ -208,3 +220,4 @@ check_elevated_processes
 check_suid_files
 verify_user_accounts
 check_firewall_policies
+review_log_files
