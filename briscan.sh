@@ -39,7 +39,7 @@ check_network_connections() {
 
 	for outbound_port in "${outbound_connections_array[@]}"; do
 		if [[ ! "$outbound_port" =~ [0-9]+ ]]; then
-			continue
+			continue 2
 		fi
 		port_found=false
 		for known_port in "${known_services_array[@]}"; do
