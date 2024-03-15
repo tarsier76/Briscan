@@ -226,12 +226,28 @@ temporary_directories_permissions() {
 	done
 }
 
-check_network_connections
-check_activated_services
-review_ssh_configuration
-check_elevated_processes
-check_suid_files
-verify_user_accounts
-check_firewall_policies
-review_log_files
-temporary_directories_permissions
+check_home_dir_permissions() {
+	printf "${bold_text}Checking home directories permissions...${end_style}"
+	for dir in /home/*; do
+		if [ -d "$dir" ]; then
+			username=$(basename "$dir")
+			home_permissions=$(stat -c "%a" "$dir")
+			if [ "$home_permissions" != "700" ]; then
+				printf "\nHome directory for user $username has permissions: $home_permissions $result_warning\nChange the permissions to 700 for best security.\n"
+			else
+				printf "\nHome directory $dir has secure permissions $result_good"
+			fi
+		fi
+	done
+}
+
+#check_network_connections
+#check_activated_services
+#review_ssh_configuration
+#check_elevated_processes
+#check_suid_files
+#verify_user_accounts
+#check_firewall_policies
+#review_log_files
+#temporary_directories_permissions
+check_home_dir_permissions
