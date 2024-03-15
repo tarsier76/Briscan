@@ -25,8 +25,8 @@
 - Review system logs for any unusual activities or errors **DONE**
 
 6. **Files and Directories** 
-- Limit access and permissions on temporary directories
-- Review user home directories permissions
+- Limit access and permissions on temporary directories **DONE**
+- Review user home directories permissions 
 
 7. **Kernel and Booting**
 - Verify if secure boot is enabled to prevent unauthorized boot loaders
