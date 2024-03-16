@@ -26,12 +26,8 @@
 
 6. **Files and Directories** 
 - Limit access and permissions on temporary directories **DONE**
-- Review user home directories permissions 
+- Review user home directories permissions **DONE**
 
-7. **Kernel and Booting**
-- Verify if secure boot is enabled to prevent unauthorized boot loaders
-- Check if unnecessary modules are disabled
-
-8. **System**
+7. **System**
 - Check if updates are available
 - Review the scheduled cron jobs for any unfamiliar or suspicious entries
