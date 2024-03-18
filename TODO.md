@@ -29,5 +29,5 @@
 - Review user home directories permissions **DONE**
 
 7. **System**
-- Check if updates are available
+- Check if updates are available **DONE**
 - Review the scheduled cron jobs for any unfamiliar or suspicious entries
