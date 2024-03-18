@@ -241,6 +241,17 @@ check_home_dir_permissions() {
 	done
 }
 
+check_update() {
+	printf "${bold_text}\nChecking if any updates are available...${end_style}"
+	package_updates_number=$(sudo apt list --upgradeable | wc -l)
+	if [ $package_updates_number -gt 1 ]; then
+		printf "There are available updates for $package_updates_number packages, consider updating $result_suggestion"
+	else
+		printf "\nNo updates available $result_good"
+	fi
+
+}
+
 #check_network_connections
 #check_activated_services
 #review_ssh_configuration
@@ -250,4 +261,5 @@ check_home_dir_permissions() {
 #check_firewall_policies
 #review_log_files
 #temporary_directories_permissions
-check_home_dir_permissions
+#check_home_dir_permissions
+check_update
