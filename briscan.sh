@@ -242,7 +242,7 @@ check_home_dir_permissions() {
 }
 
 check_update() {
-	printf "${bold_text}\nChecking if any updates are available...${end_style}"
+	printf "${bold_text}\n\nChecking if any updates are available...${end_style}"
 	package_updates_number=$(sudo apt list --upgradeable | wc -l)
 	if [ $package_updates_number -gt 1 ]; then
 		printf "There are available updates for $package_updates_number packages, consider updating $result_suggestion"
@@ -253,15 +253,15 @@ check_update() {
 }
 
 check_cron_jobs() {
-	printf "$bold_text\nLooking for cron jobs...$end_style"
+	printf "$bold_text\n\nLooking for cron jobs...$end_style"
 	cron_jobs=$(sudo ls -A /var/spool/cron/crontabs/)
 	if [ -z $cron_jobs ]; then
-		printf "\nNo cron jobs found on the system $result_good"
+		printf "\nNo cron jobs found on the system $result_good\n"
 	else
 		for user_cron in /var/spool/cron/crontabs/*; do
 			username_cronjob=$(basename $user_cron)
 			cronjob_content=$(sudo cat $user_cron)
-			printf "\nUser $username_cronjob has the following cron job set up:\n$cronjob_content $result_info"
+			printf "\nUser $username_cronjob has the following cron job set up:\n$cronjob_content $result_info\n"
 		done
 	fi
 }
