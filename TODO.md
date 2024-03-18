@@ -30,4 +30,4 @@
 
 7. **System**
 - Check if updates are available **DONE**
-- Review the scheduled cron jobs for any unfamiliar or suspicious entries
+- Review the scheduled cron jobs for any unfamiliar or suspicious entries **DONE**
